@@ -1,0 +1,19 @@
+/*
+ * Design Tokens
+ */
+
+:root {
+  /* colores */
+  --color-primary: #333333;
+  --color-primary-light: #7e7e7e;
+  --color-secondary: #b5e8e1;
+
+  --color-gray: #606060;
+  --color-gray-light: #f6f6f6;
+
+  --color-white: #ffffff;
+  --color-yellow: #ffa500;
+
+  /* fuentes */
+  --font-primary: Roboto;
+}

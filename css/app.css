@@ -1,0 +1,127 @@
+/* general */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.container-select-transport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  margin-top: 100px;
+  font-family: var(--font-primary);
+}
+.is-hidden {
+  display: none !important;
+}
+
+/* select e input */
+#select-type,
+#plate {
+  width: 100%;
+  max-width: 300px;
+  min-width: 300px;
+  color: var(--color-primary-light);
+  border: 1px solid var(--color-primary-light);
+  padding: 14px;
+  margin-bottom: 30px;
+  border-radius: 4px;
+  outline: 0;
+  font-size: 16px;
+}
+#select-type:hover,
+#plate:hover {
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+/* select tipo*/
+#select-type option {
+  padding: 10px;
+  color: var(--color-gray);
+}
+#select-type option:hover {
+  background: var(--color-gray-light);
+  color: var(--color-gray);
+  padding: 10px;
+}
+
+/* input placa */
+.container-input-plate {
+  position: relative;
+  margin-top: 40px;
+}
+.container-input-plate label {
+  position: absolute;
+  font-size: 16px;
+  top: 14px;
+  left: 12px;
+  transition: all 0.3s ease;
+  color: var(--color-primary-light);
+}
+.container-input-plate.focus label {
+  background-color: var(--color-white);
+  font-size: 12px;
+  top: -6px;
+}
+.container-input-plate:hover label {
+  color: var(--color-primary);
+}
+#plate {
+  margin: 0;
+}
+
+/* img tipo transporte */
+#container-preview-transport {
+  /* margin: 20px; */
+}
+#container-preview-transport svg {
+  width: 100%;
+}
+
+/* alerta/ validación */
+.container-alert {
+  width: 100%;
+  max-width: 300px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--color-yellow);
+}
+.container-alert i {
+  font-size: 18px;
+}
+#alert-not-found-plate {
+  margin-right: 8px;
+}
+
+/* ejes */
+object path[fill="#3B5266"] {
+  background-color: red;
+  fill: red !important;
+}
+.is-hidden-eje {
+  /* position: relative; */
+  /* display: none; */
+  fill: var(--color-white);
+}
+
+.is-hidden-eje::before {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* M31.4651 111.869C40.1939 111.869 47.27 104.794 47.27 96.0672C47.27 87.34 40.1939 80.2652 31.4651 80.2652C22.7362 80.2652 15.6602 87.34 15.6602 96.0672C15.6602 104.794 22.7362 111.869 31.4651 111.869Z */
