@@ -109,11 +109,11 @@ object path[fill="#3B5266"] {
 }
 .is-hidden-eje {
   /* position: relative; */
-  /* display: none; */
-  fill: var(--color-white);
+  display: none;
+  /* fill: var(--color-white); */
 }
 
-.is-hidden-eje::before {
+/* .is-hidden-eje::before {
   content: "";
   display: block;
   width: 100px;
@@ -122,6 +122,6 @@ object path[fill="#3B5266"] {
   position: absolute;
   top: 0;
   left: 0;
-}
+} */
 
 /* M31.4651 111.869C40.1939 111.869 47.27 104.794 47.27 96.0672C47.27 87.34 40.1939 80.2652 31.4651 80.2652C22.7362 80.2652 15.6602 87.34 15.6602 96.0672C15.6602 104.794 22.7362 111.869 31.4651 111.869Z */

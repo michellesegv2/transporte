@@ -1,4 +1,3 @@
-// `
 const Transport = (function () {
   const data = {
     typeSelected: false,
@@ -100,15 +99,15 @@ const Transport = (function () {
           let indexArr = 0;
           let count = 1;
 
-          document.querySelectorAll(`.${data.ctnPreviewTransport} path`).forEach((elem) => {
-            if (elem.getAttribute('fill') == '#3B5266') {
-              if (count == arrRender[indexArr]) {
-                indexArr++;
-              } else {
-                elem.classList.add('is-hidden-eje');
-              }
-              count++;
+          document.querySelectorAll(`.${data.ctnPreviewTransport} g`).forEach((elem) => {
+            // if (elem.getAttribute('fill') == '#3B5266') {
+            if (count == arrRender[indexArr]) {
+              indexArr++;
+            } else {
+              elem.classList.add('is-hidden-eje');
             }
+            count++;
+            // }
           });
         }
         else
@@ -182,7 +181,7 @@ const Transport = (function () {
           renderEjesIndex.unshift(first);
         }
       }
-      
+
       return renderEjesIndex;
     }
   };
