@@ -94,20 +94,23 @@ const Transport = (function () {
       methods.queryAxios(data.urlDataPlate + _plate, (dataOfPlate) => {
         if (dataOfPlate != null) {
           const ejes = dataOfPlate.ejes;
-          const type = dataOfPlate.clase;
-          const arrRender = methods.showEjes(ejes, type);
+          /**
+            * Tracto
+            * Tracto modular
+            * Tracto remolque
+            * Tracto remolque modular
+           */
+          const arrRender = methods.showEjes(ejes);
           let indexArr = 0;
           let count = 1;
 
           document.querySelectorAll(`.${data.ctnPreviewTransport} g`).forEach((elem) => {
-            // if (elem.getAttribute('fill') == '#3B5266') {
             if (count == arrRender[indexArr]) {
               indexArr++;
             } else {
               elem.classList.add('is-hidden-eje');
             }
             count++;
-            // }
           });
         }
         else
@@ -137,51 +140,13 @@ const Transport = (function () {
     },
 
     // obteniendo ejes a mostrar
-    showEjes: function (_ejes, _type) {
-      // Valores que serán seteados dependiendo del tipo de transporte
-      let renderEjesIndex = null;
-      let ejesColor = null;
-      let start = null;
-
-      switch (_type.toLowerCase()) {
-        case 'tracto':
-          renderEjesIndex = [1, 5]
-          start = 'left'
-          break;
-        case 'remolque':
-          renderEjesIndex = [8, 9, 10, 11, 17, 18];
-          start = 'right';
-          break;
-        case 'semiremolque':
-          renderEjesIndex = [18];
-          start = 'right';
-          break;
-        case 'modular':
-          renderEjesIndex = [13, 14, 15, 16, 17, 18];
-          start = 'right';
-          break;
+    showEjes: function (_ejes) {
+      // Llenar array con los index de ejes que se mostrarán
+      let renderEjesIndex = []
+      for (let i = 0; i < _ejes; i++) {
+        renderEjesIndex.push(i + 1)
       }
-
-      ejesColor = _ejes - renderEjesIndex.length >= 0 ? _ejes - renderEjesIndex.length : 0;
-
-      let init = null;
-      if (start == 'left') {
-        init = Math.max(...renderEjesIndex);
-        for (let i = 0; i < ejesColor; i++) {
-          let lastItem = renderEjesIndex[renderEjesIndex.length - 1];
-          lastItem++;
-          renderEjesIndex.push(lastItem);
-        }
-      }
-      else {
-        init = Math.min(...renderEjesIndex);
-        for (let i = ejesColor; i > 0; i--) {
-          let first = renderEjesIndex[0];
-          first--;
-          renderEjesIndex.unshift(first);
-        }
-      }
-
+      console.log(renderEjesIndex)
       return renderEjesIndex;
     }
   };
