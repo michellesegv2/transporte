@@ -26,8 +26,10 @@ const Transport = (function () {
           }
         });
 
-        data.ctnAlertNotData.classList.add('is-hidden');
         data.typeSelected = true;
+
+        // Limapiando valores anteriores
+        methods.restart();
       });
     },
 
@@ -114,29 +116,28 @@ const Transport = (function () {
           });
         }
         else
-          methods.showAlert('Número de placa incorrecto o no ha sido registrado en el MTC.')
+          methods.showAlert('Número de placa incorrecto o no ha sido registrado en el MTC')
       });
     },
 
     // Cantidad de ejes a mostrar
     validatePlate: function (_plate) {
+      const regxPlate = /-/g;
       if (_plate.length > 0) {
         if (!data.typeSelected)
           methods.showAlert('Debe seleccionar un tipo');
         else {
-          data.ctnAlertNotData.classList.add('is-hidden');
-          methods.getDataOfPlate(_plate)
+          if (regxPlate.test(_plate)) {
+            methods.showAlert('Evite ingresar caracteres especiales')
+          } else {
+            data.ctnAlertNotData.classList.add('is-hidden');
+            methods.getDataOfPlate(_plate)
+          }
         }
       }
       else {
         methods.showAlert('Ingrese un valor')
       }
-    },
-
-    // Mensaje de alerta
-    showAlert: function (_text) {
-      data.ctnAlertNotData.classList.remove('is-hidden')
-      data.alertNotData.innerText = _text;
     },
 
     // obteniendo ejes a mostrar
@@ -146,9 +147,30 @@ const Transport = (function () {
       for (let i = 0; i < _ejes; i++) {
         renderEjesIndex.push(i + 1)
       }
-      console.log(renderEjesIndex)
+
       return renderEjesIndex;
+    },
+
+    // Mensaje de alerta
+    showAlert: function (_text) {
+      data.ctnAlertNotData.classList.remove('is-hidden')
+      data.alertNotData.innerText = _text;
+    },
+
+    // Seteando valores inciales
+    restart: function () {
+      // Limpiando input de placa
+      data.inputPlate.value = '';
+
+      // Ocultando warning
+      data.ctnAlertNotData.classList.add('is-hidden');
+
+      // Mostrando todos los ejes
+      document.querySelectorAll('.transport-item g').forEach((elem) => {
+        elem.classList.remove('is-hidden-eje');
+      })
     }
+
   };
 
   const initialize = function () {
