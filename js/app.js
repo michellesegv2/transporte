@@ -5,7 +5,9 @@ const Transport = (function () {
     urlDataPlate: 'https://apigateway.pvn.gob.pe/ts/v1/VehicularMtc?placa=',
     selectType: document.getElementById('select-type'),
     itemsTransport: document.querySelectorAll('.transport-item'),
-    inputPlate: document.getElementById('plate'),
+    inputPlate1: document.getElementById('plate-1'),
+    inputPlates: document.querySelectorAll('.input-plate'),
+    ctnInputPlates: document.querySelectorAll('.container-input-plate'),
     alertNotData: document.getElementById('alert-not-found-data'),
     ctnAlertNotData: document.getElementById('alert-not-found-data').parentNode,
     ctnPreviewTransport: null
@@ -16,7 +18,7 @@ const Transport = (function () {
     onSelectTypeChange: function () {
       data.selectType.addEventListener('change', () => {
         const svgSelected = data.selectType.value;
-
+        const cantOfTypes = data.selectType.options[data.selectType.selectedIndex].getAttribute('data-items');
         data.itemsTransport.forEach((elem) => {
           if (elem.classList.contains(svgSelected)) {
             elem.classList.remove('is-hidden');
@@ -28,27 +30,29 @@ const Transport = (function () {
 
         data.typeSelected = true;
 
-        // Limapiando valores anteriores
+        // Limpiando valores anteriores
         methods.restart();
+        // Mostrando inputs de placas necesarios
+        methods.showInputsPlates(cantOfTypes)
       });
     },
 
     // Eventos para el input de la placa
-    onBlurPlate: function () {
-      data.inputPlate.addEventListener('focusout', (e) => {
+    onBlurPlate: function (elem) {
+      elem.addEventListener('focusout', (e) => {
         const plate = e.target.value;
         methods.validatePlate(plate);
         if (plate.length == 0)
-          data.inputPlate.parentNode.classList.remove('focus');
+          e.target.parentNode.classList.remove('focus');
       });
     },
-    onFocusPlate: function () {
-      data.inputPlate.addEventListener('focus', () => {
-        data.inputPlate.parentNode.classList.add('focus');
+    onFocusPlate: function (elem) {
+      elem.addEventListener('focus', (e) => {
+        e.target.parentNode.classList.add('focus');
       });
     },
-    onEnterPlate: function () {
-      data.inputPlate.addEventListener('keypress', (e) => {
+    onEnterPlate: function (elem) {
+      elem.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           methods.validatePlate(e.target.value);
         }
@@ -79,7 +83,9 @@ const Transport = (function () {
         listOfTypes.forEach(item => {
           // Creando option desde la data recibida
           let type = document.createElement('option');
+          const cantOfTypes = item.cConfiguracionVehicular.split('/').length;
           type.innerText = item.cDescripcion;
+          type.setAttribute('data-items', cantOfTypes)
           type.value = item.cConfiguracionVehicular
             .replace(/ \/ /g, '-')
             .replace(/ /g, '-')
@@ -96,6 +102,7 @@ const Transport = (function () {
       methods.queryAxios(data.urlDataPlate + _plate, (dataOfPlate) => {
         if (dataOfPlate != null) {
           const ejes = dataOfPlate.ejes;
+          // const ejes = 6;
           /**
             * Tracto
             * Tracto modular
@@ -156,11 +163,18 @@ const Transport = (function () {
       data.ctnAlertNotData.classList.remove('is-hidden')
       data.alertNotData.innerText = _text;
     },
+    //Mostrando inputs de placa
+    showInputsPlates: function (_numOfTypes) {
+      console.log(_numOfTypes)
+      for(let i = 0; i < _numOfTypes; i++){
+        data.ctnInputPlates[i].classList.remove('is-hidden')
+      }
 
+    },
     // Seteando valores inciales
     restart: function () {
       // Limpiando input de placa
-      data.inputPlate.value = '';
+      data.inputPlate1.value = '';
 
       // Ocultando warning
       data.ctnAlertNotData.classList.add('is-hidden');
@@ -168,6 +182,10 @@ const Transport = (function () {
       // Mostrando todos los ejes
       document.querySelectorAll('.transport-item g').forEach((elem) => {
         elem.classList.remove('is-hidden-eje');
+      })
+      //Ocultando todos los inputs de placa
+      data.ctnInputPlates.forEach((elem) => {
+        elem.classList.add('is-hidden');
       })
     }
 
@@ -179,9 +197,11 @@ const Transport = (function () {
     methods.getDataTypeConfig();
 
     // Eventos del input placa
-    events.onEnterPlate();
-    events.onBlurPlate();
-    events.onFocusPlate();
+    data.inputPlates.forEach((plate) => {
+      events.onEnterPlate(plate);
+      events.onBlurPlate(plate);
+      events.onFocusPlate(plate);
+    })
   };
 
   return {

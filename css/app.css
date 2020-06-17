@@ -20,7 +20,7 @@
 
 /* select e input */
 #select-type,
-#plate {
+.input-plate {
   width: 100%;
   max-width: 300px;
   min-width: 300px;
@@ -33,7 +33,7 @@
   font-size: 16px;
 }
 #select-type:hover,
-#plate:hover {
+.input-plate:hover {
   color: var(--color-primary);
   border: 1px solid var(--color-primary);
 }
@@ -70,7 +70,7 @@
 .container-input-plate:hover label {
   color: var(--color-primary);
 }
-#plate {
+.input-plate {
   margin: 0;
 }
 
