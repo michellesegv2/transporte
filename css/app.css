@@ -11,7 +11,8 @@
   width: 90%;
   max-width: 400px;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 30px;
+  margin-bottom: 30px;
   font-family: var(--font-primary);
 }
 .is-hidden {
@@ -75,10 +76,49 @@
 }
 
 /* img tipo transporte */
+#container-preview-transport {
+  width: 100%;
+  position: relative;
+}
+#container-preview-transport .ctn-num-ejes {
+  max-width: 175px;
+  right: 5px;
+  top: 25px;
+  position: absolute;
+}
+#container-preview-transport .ctn-num-ejes.dolly {
+  max-width: 130px;
+}
+#container-preview-transport .ctn-num-ejes img {
+  width: 100%;
+}
+#container-preview-transport .ctn-num-ejes #numero-ejes {
+  position: absolute;
+  font-size: 14px;
+  line-height: 17.5px;
+  background-color: var(--color-blue);
+  color: var(--color-white);
+  padding: 3.5px;
+  border-radius: 50%;
+  text-align: center;
+  right: 75px;
+  top: 13px;
+  width: 23.5px;
+  height: 23.5px;
+}
+#container-preview-transport .ctn-num-ejes.dolly #numero-ejes {
+  right: 56px;
+  top: 10px;
+  padding: 2px;
+  font-size: 10px;
+  line-height: 13.5px;
+  width: 16px;
+  height: 16px;
+}
+
 #container-preview-transport svg {
   width: 100%;
 }
-
 /* alerta/ validación */
 .container-alert {
   width: 100%;

@@ -8,8 +8,9 @@ const Transport = (function () {
     inputPlate1: document.getElementById('plate-1'),
     inputPlates: document.querySelectorAll('.input-plate'),
     ctnInputPlates: document.querySelectorAll('.container-input-plate'),
-    alertNotData: document.getElementById('alert-not-found-data'),
-    ctnAlertNotData: document.getElementById('alert-not-found-data').parentNode,
+    // alertNotData: document.getElementById('alert-not-found-data'),
+    ctnNumEjes: document.querySelector('.ctn-num-ejes'),
+    numEjes: document.getElementById('numero-ejes'),
     ctnPreviewTransport: null
   };
 
@@ -30,8 +31,13 @@ const Transport = (function () {
 
         data.typeSelected = true;
 
+        // Mostrando / ocultando 'número de ejes'
+        data.ctnPreviewTransport.indexOf('cigueña') == -1 ? data.ctnNumEjes.classList.remove('is-hidden') : data.ctnNumEjes.classList.add('is-hidden');
+        data.ctnPreviewTransport.indexOf('dolly') > -1 ? data.ctnNumEjes.classList.add('dolly') : data.ctnNumEjes.classList.remove('dolly');
+
         // Limpiando valores anteriores
         methods.restart();
+
         // Mostrando inputs de placas necesarios
         methods.showInputsPlates(cantOfTypes)
       });
@@ -41,7 +47,8 @@ const Transport = (function () {
     onBlurPlate: function (elem) {
       elem.addEventListener('focusout', (e) => {
         const plate = e.target.value;
-        methods.validatePlate(plate);
+        const numInput = e.target.id.split('-')[1];
+        methods.validatePlate(plate, numInput);
         if (plate.length == 0)
           e.target.parentNode.classList.remove('focus');
       });
@@ -54,7 +61,7 @@ const Transport = (function () {
     onEnterPlate: function (elem) {
       elem.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-          methods.validatePlate(e.target.value);
+          methods.validatePlate(e.target.value, e.target.id.split('-')[1]);
         }
       });
     }
@@ -98,94 +105,128 @@ const Transport = (function () {
     },
 
     // Obteniendo data de placas para cant de ejes
-    getDataOfPlate: function (_plate) {
+    getDataOfPlate: function (_plate, _numInput) {
       methods.queryAxios(data.urlDataPlate + _plate, (dataOfPlate) => {
         if (dataOfPlate != null) {
           const ejes = dataOfPlate.ejes;
-          // const ejes = 6;
-          /**
-            * Tracto
-            * Tracto modular
-            * Tracto remolque
-            * Tracto remolque modular
-           */
-          const arrRender = methods.showEjes(ejes);
-          let indexArr = 0;
-          let count = 1;
-
-          document.querySelectorAll(`.${data.ctnPreviewTransport} g`).forEach((elem) => {
-            if (count == arrRender[indexArr]) {
-              indexArr++;
-            } else {
-              elem.classList.add('is-hidden-eje');
-            }
-            count++;
-          });
+          // const ejes = 10;
+          const arrRender = methods.showEjes(ejes, _numInput);
+          arrRender.forEach(elem => {
+            document.querySelectorAll(`.${data.ctnPreviewTransport} g`)[elem].classList.remove('is-hidden-eje');
+          })
         }
         else
-          methods.showAlert('Número de placa incorrecto o no ha sido registrado en el MTC')
+          methods.showAlert('Número de placa incorrecto o no ha sido registrado en el MTC', _numInput)
       });
     },
 
     // Cantidad de ejes a mostrar
-    validatePlate: function (_plate) {
+    validatePlate: function (_plate, _numInput) {
       const regxPlate = /-/g;
       if (_plate.length > 0) {
         if (!data.typeSelected)
-          methods.showAlert('Debe seleccionar un tipo');
+          methods.showAlert('Debe seleccionar un tipo', _numInput);
         else {
           if (regxPlate.test(_plate)) {
-            methods.showAlert('Evite ingresar caracteres especiales')
+            methods.showAlert('Evite ingresar caracteres especiales', _numInput)
           } else {
-            data.ctnAlertNotData.classList.add('is-hidden');
-            methods.getDataOfPlate(_plate)
+            document.getElementById(`alert-not-found-data-${_numInput}`).parentNode.classList.add('is-hidden');
+            methods.getDataOfPlate(_plate, _numInput)
           }
         }
       }
       else {
-        methods.showAlert('Ingrese un valor')
+        methods.showAlert('Ingrese un valor', _numInput)
       }
     },
 
     // obteniendo ejes a mostrar
-    showEjes: function (_ejes) {
+    showEjes: function (_ejes, _numInput) {
+      const typeTransport = data.ctnPreviewTransport;
+      let init;
+      let max;
+      let direction;
+      let ejes;
+
+      // Setando valores en base al tipo de estructura
+      switch (_numInput) {
+        case '1':
+          init = 0;
+          max = 4;
+          direction = 'left';
+          break;
+        case '2':
+          init = 4;
+          direction = 'right';
+          max = typeTransport.indexOf('dolly') > -1
+            ? 4 : typeTransport.indexOf('cigueña') > -1
+              ? 14 : 5;
+          typeTransport.indexOf('dolly') > -1
+            ? true : data.numEjes.innerHTML = _ejes;
+          break;
+        case '3':
+          init = 8;
+          max = 5;
+          direction = 'right';
+          data.numEjes.innerHTML = _ejes
+          break;
+      }
+
+      // Estableciendo la cantidad de ejes
+      ejes = _ejes <= max ? parseInt(_ejes) : max;
+
       // Llenar array con los index de ejes que se mostrarán
       let renderEjesIndex = []
-      for (let i = 0; i < _ejes; i++) {
-        renderEjesIndex.push(i + 1)
+
+      if (direction == 'left') {
+        for (let i = init; i < ejes; i++) {
+          renderEjesIndex.push(i);
+        }
+      }
+      else {
+        for (let i = init + max - 1; i > init + max - ejes - 1; i--) {
+          renderEjesIndex.unshift(i);
+        }
       }
 
       return renderEjesIndex;
     },
 
     // Mensaje de alerta
-    showAlert: function (_text) {
-      data.ctnAlertNotData.classList.remove('is-hidden')
-      data.alertNotData.innerText = _text;
+    showAlert: function (_text, _input) {
+      document.getElementById(`alert-not-found-data-${_input}`).parentNode.classList.remove('is-hidden')
+      document.getElementById(`alert-not-found-data-${_input}`).innerText = _text;
     },
+
     //Mostrando inputs de placa
     showInputsPlates: function (_numOfTypes) {
-      console.log(_numOfTypes)
-      for(let i = 0; i < _numOfTypes; i++){
+      for (let i = 0; i < _numOfTypes; i++) {
         data.ctnInputPlates[i].classList.remove('is-hidden')
       }
-
     },
+
     // Seteando valores inciales
     restart: function () {
       // Limpiando input de placa
-      data.inputPlate1.value = '';
+      data.inputPlates.forEach((plate) => {
+        plate.value = '';
+      })
+
+      // Reestableciendo valor de número de ejes
+      data.numEjes.innerHTML = '00'
 
       // Ocultando warning
-      data.ctnAlertNotData.classList.add('is-hidden');
+      // data.ctnAlertNotData.classList.add('is-hidden');
 
       // Mostrando todos los ejes
       document.querySelectorAll('.transport-item g').forEach((elem) => {
-        elem.classList.remove('is-hidden-eje');
+        elem.classList.add('is-hidden-eje');
       })
+
       //Ocultando todos los inputs de placa
       data.ctnInputPlates.forEach((elem) => {
         elem.classList.add('is-hidden');
+        elem.value = '';
       })
     }
 
